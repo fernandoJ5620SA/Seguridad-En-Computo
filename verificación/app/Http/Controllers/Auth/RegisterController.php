@@ -7,8 +7,8 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
 
 class RegisterController extends Controller
 {
@@ -23,6 +23,8 @@ class RegisterController extends Controller
     |
     */
 
+    
+    
     use RegistersUsers {
         register as registration;
     }
@@ -65,15 +67,65 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
+
+
+     // Agrega tu método de encriptación al controlador
+    private function encriptar($mensaje)
+    {
+            $diccionario = [
+                "A" => "YC", "B" => "ZD" ,"C" => "AC" ,"D" => "BF" ,"E" => "CG",
+                "F" => "DH", "G" => "EI" ,"H" => "FJ" ,"I" => "GK" ,"J" => "HL",                            
+                "K" => "IM", "L" => "JN" ,"M" => "KÑ" ,"N" => "LO" ,"Ñ" => "MP", 
+                "O" => "NQ", "P" => "ÑR" ,"Q" => "OS" ,"R" => "PT" ,"S" => "QU",                            
+                "T" => "RV", "U" => "SW" ,"V" => "TX" ,"W" => "UY" ,"X" => "VZ",
+                "Y" => "WA", "Z" => "XB", 
+
+                "a" => "yc", "b" => "zd" ,"c" => "ac" ,"d" => "bf" ,"e" => "cg",
+                "f" => "dh", "g" => "ei" ,"h" => "fj" ,"i" => "gk" ,"j" => "hl",                            
+                "k" => "im", "l" => "jn" ,"m" => "kñ" ,"n" => "lo" ,"ñ" => "mp", 
+                "o" => "nq", "p" => "ñr" ,"q" => "os" ,"r" => "pt" ,"s" => "qu",                            
+                "t" => "rv", "u" => "sw" ,"v" => "tx" ,"w" => "uy" ,"x" => "vz",
+                "y" => "wa", "z" => "xb", 
+                
+                "1" => "93", "2" => "04" ,"3" => "15" ,"4" => "26" ,"5" => "37", 
+                "6" => "48", "7" => "59" ,"8" => "60" ,"9" => "71" ,"0" => "82", 
+                " " => " "  
+                // Agrega más reemplazos según tu diccionario
+            ];
+
+            $mensajeEncriptado = '';
+
+        // Iterar sobre cada carácter del mensaje
+        for ($i = 0; $i < strlen($mensaje); $i++) {
+            $caracter = $mensaje[$i];
+
+            // Verificar si el carácter está en el diccionario
+            if (array_key_exists($caracter, $diccionario)) {
+                // Agregar el valor encriptado al mensaje encriptado
+                $mensajeEncriptado .= $diccionario[$caracter];
+            } else {
+                // Si el carácter no está en el diccionario, agregarlo sin cambios
+                $mensajeEncriptado .= $caracter;
+            }
+        }
+
+        return $mensajeEncriptado;
+    }
+
+
+
     protected function create(array $data)
     {
+        $encryptedPassword = $this->encriptar($data['password']);
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => $encryptedPassword,
             'google2fa_secret' => $data['google2fa_secret'],
         ]);
     }
+
+
     /**
      * Write code on Method
      *
@@ -111,4 +163,6 @@ class RegisterController extends Controller
   
         return $this->registration($request);
     }
+
+
 }
